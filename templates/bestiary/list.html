@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Bestiario | RPG Codex{% endblock %}
+{% block content %}
+<div class="page-title-row"><div><div class="eyebrow">ARCHIVO DEL MUNDO / BESTIARIO</div><h2>Bestiario</h2><p>Criaturas, monstruos y adversarios de la campaña.</p></div><a href="{{ url_for('creature_new') }}" class="primary-button">+ NUEVA CRIATURA</a></div>
+{% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="flash-message {{ category }}">{{ message }}</div>{% endfor %}{% endwith %}
+{% if creatures %}<div class="compendium-grid">{% for creature in creatures %}<a href="{{ url_for('creature_detail', creature_id=creature['id']) }}" class="compendium-card"><div class="compendium-icon">▧</div><div class="compendium-card-content"><span class="compendium-type">{{ creature['creature_type']|upper }}</span><h3>{{ creature['name'] }}</h3><p>{{ creature['summary'] or 'Sin resumen registrado.' }}</p><div class="compendium-meta"><span>NIV. {{ creature['level'] if creature['level'] is not none else '—' }}</span><span>{{ creature['rarity'] }}</span>{% if creature['location_name'] %}<span>◈ {{ creature['location_name'] }}</span>{% endif %}</div></div><span class="compendium-arrow">→</span></a>{% endfor %}</div>
+{% else %}<section class="content-panel empty-state"><div class="empty-icon">▧</div><h3>No hay criaturas registradas</h3><p>Registra monstruos, animales, PNJ hostiles o cualquier criatura relevante.</p><a href="{{ url_for('creature_new') }}" class="primary-button">CREAR PRIMERA CRIATURA</a></section>{% endif %}
+{% endblock %}

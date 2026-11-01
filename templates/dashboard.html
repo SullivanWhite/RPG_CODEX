@@ -1,0 +1,301 @@
+
+{% extends "base.html" %}
+
+{% block title %}Valdren Hollow | RPG Codex{% endblock %}
+
+{% block content %}
+
+<!-- CABECERA DE CAMPAÑA -->
+
+<div class="dashboard-header">
+    <div>
+        <div class="eyebrow">CENTRO DE OPERACIONES</div>
+        <h2>{{ campaign["name"] }}</h2>
+        <p>Un pueblo próspero. Una historia que oculta algo más.</p>
+    </div>
+
+    <div class="campaign-badge">
+        <span class="status-dot"></span>
+        CAMPAÑA ACTIVA
+    </div>
+</div>
+
+
+<!-- BANNER PRINCIPAL -->
+
+<section class="campaign-banner">
+
+    <div class="banner-overlay"></div>
+
+    <div class="banner-content">
+        <div class="banner-label">CAMPAÑA · CAPÍTULO I</div>
+
+        <h2>{{ campaign["name"] }}</h2>
+
+        <p>
+            Entre Roderic's Cove y el río Lampblack,
+            se levanta un pueblo cuyo futuro parece prometedor.
+        </p>
+
+        <div class="banner-actions">
+            <a href="#" class="primary-button">ABRIR CÓDICE</a>
+            <a href="#" class="secondary-button">VER HISTORIA</a>
+        </div>
+    </div>
+
+    <div class="banner-decoration">✦</div>
+
+</section>
+
+
+<!-- INDICADORES -->
+
+<div class="quick-stats">
+
+    <div class="stat-card">
+        <span>SESIONES</span>
+        <strong>04</strong>
+        <small>Registradas</small>
+    </div>
+
+    <div class="stat-card">
+        <span>PERSONAJES</span>
+        <strong>{{ "%02d"|format(character_count) }}</strong>
+        <small>PNJ registrados</small>
+    </div>
+
+    <div class="stat-card">
+        <span>LOCALIZACIONES</span>
+        <strong>{{ "%02d"|format(location_count) }}</strong>
+        <small>Lugares descubiertos</small>
+    </div>
+
+    <div class="stat-card">
+        <span>MISIONES</span>
+        <strong>05</strong>
+        <small>En seguimiento</small>
+    </div>
+
+</div>
+
+
+<!-- CONTENIDO PRINCIPAL -->
+
+<div class="dashboard-layout">
+
+    <div class="dashboard-main">
+
+        <!-- RESUMEN -->
+
+        <section class="content-panel">
+
+            <div class="panel-heading">
+                <h3>RESUMEN DE CAMPAÑA</h3>
+                <span>INFORMACIÓN GENERAL</span>
+            </div>
+
+            <p class="campaign-description">
+                Valdren Hollow atraviesa una época de prosperidad.
+                El comercio florece, las armas mágicas atraen
+                visitantes y el conde DoRoux parece haber conseguido
+                lo que muchos consideraban imposible.
+
+                Sin embargo, bajo esta aparente tranquilidad,
+                comienzan a surgir acontecimientos inquietantes.
+            </p>
+
+        </section>
+
+
+        <!-- OBJETIVOS -->
+
+        <section class="content-panel">
+
+            <div class="panel-heading">
+                <h3>OBJETIVOS Y SEGUIMIENTO</h3>
+                <a href="#">VER TODOS →</a>
+            </div>
+
+            <div class="objective-list">
+
+                <div class="objective">
+                    <span class="objective-icon">□</span>
+                    <div>
+                        <strong>Preparar la ceremonia</strong>
+                        <small>Evento principal · Valdren Hollow</small>
+                    </div>
+                    <span class="priority">IMPORTANTE</span>
+                </div>
+
+                <div class="objective">
+                    <span class="objective-icon">□</span>
+                    <div>
+                        <strong>Investigar la mansión DoRoux</strong>
+                        <small>Trama secundaria</small>
+                    </div>
+                </div>
+
+                <div class="objective">
+                    <span class="objective-icon">□</span>
+                    <div>
+                        <strong>Desarrollar los secretos del conde</strong>
+                        <small>Información privada del director</small>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ACCESOS RÁPIDOS -->
+
+        <section class="content-panel">
+
+            <div class="panel-heading">
+                <h3>ARCHIVOS DEL CÓDICE</h3>
+                <span>ACCESO DIRECTO</span>
+            </div>
+
+            <div class="archive-grid">
+
+                <a href="{{ url_for('locations') }}" class="archive-card">
+                    <span>◈</span>
+                    <strong>Localizaciones</strong>
+                    <small>Ciudades, edificios y territorios</small>
+                </a>
+
+                <a href="{{ url_for('characters') }}" class="archive-card">
+                    <span>♙</span>
+                    <strong>Personajes</strong>
+                    <small>PNJ, aliados y enemigos</small>
+                </a>
+
+                <a href="{{ url_for('factions') }}" class="archive-card">
+                    <span>⚑</span>
+                    <strong>Facciones</strong>
+                    <small>{{ faction_count }} organizaciones y relaciones</small>
+                </a>
+
+                <a href="{{ url_for('bestiary') }}" class="archive-card">
+                    <span>▧</span>
+                    <strong>Bestiario</strong>
+                    <small>{{ creature_count }} criaturas registradas</small>
+                </a>
+
+                <a href="{{ url_for('items') }}" class="archive-card">
+                    <span>◇</span>
+                    <strong>Objetos</strong>
+                    <small>{{ item_count }} objetos registrados</small>
+                </a>
+
+                <a href="#" class="archive-card">
+                    <span>▤</span>
+                    <strong>Misiones</strong>
+                    <small>Tramas y acontecimientos</small>
+                </a>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- COLUMNA LATERAL -->
+
+    <aside class="dashboard-aside">
+
+        <!-- PERSONAJES DESTACADOS -->
+
+        <section class="content-panel">
+
+            <div class="panel-heading">
+                <h3>PNJ DESTACADOS</h3>
+                <a href="#">VER TODOS</a>
+            </div>
+
+            <div class="npc-list">
+
+                <div class="npc-item">
+                    <div class="npc-avatar">DR</div>
+                    <div>
+                        <strong>Conde DoRoux</strong>
+                        <small>Noble · Nivel 4</small>
+                    </div>
+                </div>
+
+                <div class="npc-item">
+                    <div class="npc-avatar">KB</div>
+                    <div>
+                        <strong>Kabran Ojosangriento</strong>
+                        <small>Dromaar · Guerrero</small>
+                    </div>
+                </div>
+
+                <div class="npc-item">
+                    <div class="npc-avatar">DG</div>
+                    <div>
+                        <strong>Deveera Gadsel</strong>
+                        <small>Artesana</small>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ACTIVIDAD -->
+
+        <section class="content-panel">
+
+            <div class="panel-heading">
+                <h3>ACTIVIDAD RECIENTE</h3>
+            </div>
+
+            <div class="activity-list">
+
+                <div class="activity-item">
+                    <span class="activity-dot"></span>
+                    <div>
+                        <strong>Campaña creada</strong>
+                        <small>Registro inicial de Valdren Hollow</small>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <span class="activity-dot"></span>
+                    <div>
+                        <strong>Personajes registrados</strong>
+                        <small>Archivo de PNJ</small>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- NOTAS DEL DIRECTOR -->
+
+        <section class="content-panel director-notes">
+
+            <div class="panel-heading">
+                <h3>NOTAS DEL DIRECTOR</h3>
+            </div>
+
+            <p>
+                Los secretos de la campaña deben permanecer
+                ocultos para los jugadores.
+            </p>
+
+            <a href="#">ABRIR DIARIO PRIVADO →</a>
+
+        </section>
+
+    </aside>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,199 @@
+
+/* ==========================================
+   RPG CODEX - RELATIONSHIP SYSTEM
+   ========================================== */
+
+.relationships-panel {
+    margin-bottom: 18px;
+}
+
+.relationship-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.relationship-card {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 13px;
+    background: #202d39;
+    border: 1px solid #344453;
+    transition: 0.2s;
+}
+
+.relationship-card:hover {
+    border-color: var(--gold);
+}
+
+.relationship-avatar {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    background: #344555;
+    border: 1px solid var(--border);
+    color: var(--gold);
+    font-size: 22px;
+}
+
+.relationship-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.relationship-name {
+    display: block;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.relationship-name:hover {
+    color: var(--gold-light);
+}
+
+.relationship-type {
+    display: inline-block;
+    margin-top: 6px;
+    color: var(--gold);
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.relationship-info p {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.6;
+    margin-top: 7px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.relationship-delete {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #55373b;
+    background: transparent;
+    color: #d28d8d;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.relationship-delete:hover {
+    background: #65353b;
+    color: white;
+}
+
+/* EMPTY RELATIONSHIPS */
+
+.relationship-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 25px 15px;
+}
+
+.relationship-empty > span {
+    color: var(--gold);
+    font-size: 30px;
+    margin-bottom: 12px;
+}
+
+.relationship-empty strong {
+    font-size: 12px;
+}
+
+.relationship-empty p {
+    color: var(--muted);
+    font-size: 10px;
+    margin-top: 7px;
+    line-height: 1.6;
+    max-width: 300px;
+}
+
+/* RELATIONSHIP FORM */
+
+.relationship-form-container {
+    border-top: 1px solid var(--border);
+    margin-top: 20px;
+    padding-top: 20px;
+}
+
+.relationship-form-heading {
+    color: var(--gold);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    margin-bottom: 17px;
+}
+
+.relationship-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.relationship-form .form-group {
+    margin-bottom: 15px;
+}
+
+.relationship-form .form-group input,
+.relationship-form .form-group select,
+.relationship-form .form-group textarea {
+    background: #111a23;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 12px;
+    font-family: inherit;
+    font-size: 12px;
+    outline: none;
+    border-radius: 2px;
+    width: 100%;
+}
+
+.relationship-form .form-group input:focus,
+.relationship-form .form-group select:focus,
+.relationship-form .form-group textarea:focus {
+    border-color: var(--gold);
+}
+
+.relationship-form .form-group textarea {
+    resize: vertical;
+    line-height: 1.7;
+}
+
+.relationship-form .form-group label {
+    display: block;
+    color: var(--gold-light);
+    font-size: 11px;
+    margin-bottom: 8px;
+}
+
+.relationship-form .primary-button {
+    align-self: flex-start;
+}
+
+.relationship-hint {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.7;
+    padding: 10px 0;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+
+    .relationship-card {
+        align-items: flex-start;
+    }
+
+    .relationship-delete {
+        flex-shrink: 0;
+    }
+
+}

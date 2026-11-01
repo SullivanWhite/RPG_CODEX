@@ -1,0 +1,464 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ character["name"] }} | RPG Codex{% endblock %}
+
+{% block content %}
+
+<div class="page-title-row">
+
+    <div>
+        <div class="eyebrow">ARCHIVO DEL MUNDO / PERSONAJES</div>
+        <h2>{{ character["name"] }}</h2>
+        <p>{{ character["ancestry"] }} · {{ character["occupation"] }}</p>
+    </div>
+
+    <div class="detail-actions">
+
+        <a href="{{ url_for('character_edit', character_id=character['id']) }}"
+           class="primary-button">
+            EDITAR
+        </a>
+
+        <a href="{{ url_for('characters') }}"
+           class="secondary-button">
+            VOLVER
+        </a>
+
+    </div>
+
+</div>
+
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <div class="flash-message {{ category }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endwith %}
+
+
+<!-- IDENTIDAD -->
+
+<section class="content-panel character-identity">
+
+    {% if character["portrait_url"] %}
+
+        <img src="{{ character['portrait_url'] }}"
+             alt="{{ character['name'] }}"
+             class="character-detail-portrait">
+
+    {% else %}
+
+        <div class="character-detail-placeholder">♙</div>
+
+    {% endif %}
+
+    <div class="character-identity-info">
+
+        <span class="character-type">
+            {{ character["character_type"]|upper }}
+        </span>
+
+        <h2>{{ character["name"] }}</h2>
+
+        <p>{{ character["summary"] or "Sin descripción breve." }}</p>
+
+        <div class="identity-tags">
+
+            <span>{{ character["ancestry"] or "Sin ascendencia" }}</span>
+
+            <span>{{ character["occupation"] or "Sin ocupación" }}</span>
+
+            {% if character["age"] %}
+                <span>{{ character["age"] }}</span>
+            {% endif %}
+
+        </div>
+
+        <div class="character-location">
+
+            <span>LOCALIZACIÓN</span>
+
+            <strong>
+                {{ character["location_name"] or "Sin asignar" }}
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FACCIONES -->
+
+<section class="content-panel faction-affiliations">
+
+    <div class="panel-heading">
+        <h3>FACCIONES Y ORGANIZACIONES</h3>
+        <span>{{ factions|length }} VÍNCULOS</span>
+    </div>
+
+    {% if factions %}
+        <div class="faction-links">
+            {% for faction in factions %}
+                <a href="{{ url_for('faction_detail', faction_id=faction['id']) }}"
+                   class="faction-link">
+                    <span>⚑</span>
+                    <div>
+                        <strong>{{ faction['name'] }}</strong>
+                        <small>{{ faction['role'] }}{% if faction['membership_description'] %} · {{ faction['membership_description'] }}{% endif %}</small>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="connection-empty">
+            Este personaje todavía no está vinculado a ninguna facción.
+        </p>
+    {% endif %}
+
+</section>
+
+
+<!-- PERFIL -->
+
+<div class="character-profile-grid">
+
+    <div class="character-profile-main">
+
+        <section class="content-panel">
+
+            <div class="panel-heading">
+                <h3>PERSONALIDAD</h3>
+            </div>
+
+            <div class="detail-text">
+                {{ character["personality"] or "Sin información registrada." }}
+            </div>
+
+        </section>
+
+
+        <section class="content-panel">
+
+            <div class="panel-heading">
+                <h3>BIOGRAFÍA E HISTORIA</h3>
+            </div>
+
+            <div class="detail-text">
+                {{ character["biography"] or "Sin biografía registrada." }}
+            </div>
+
+        </section>
+
+
+        <section class="content-panel">
+
+            <div class="panel-heading">
+                <h3>MOTIVACIONES Y OBJETIVOS</h3>
+            </div>
+
+            <div class="detail-text">
+                {{ character["motivations"] or "Sin motivaciones registradas." }}
+            </div>
+
+        </section>
+
+
+        <!-- RELACIONES -->
+
+        <section class="content-panel relationships-panel">
+
+            <div class="panel-heading">
+
+                <h3>RELACIONES DEL PERSONAJE</h3>
+
+                <span>{{ relationships|length }} RELACIONES</span>
+
+            </div>
+
+
+            {% if relationships %}
+
+                <div class="relationship-list">
+
+                    {% for relationship in relationships %}
+
+                        <div class="relationship-card">
+
+                            <div class="relationship-avatar">
+                                ♙
+                            </div>
+
+                            <div class="relationship-info">
+
+                                <a href="{{ url_for('character_detail', character_id=relationship['related_id']) }}"
+                                   class="relationship-name">
+
+                                    {{ relationship["related_name"] }}
+
+                                </a>
+
+                                <span class="relationship-type">
+                                    {{ relationship["relationship_type"] }}
+                                </span>
+
+                                {% if relationship["description"] %}
+
+                                    <p>
+                                        {{ relationship["description"] }}
+                                    </p>
+
+                                {% endif %}
+
+                            </div>
+
+                            <form method="POST"
+                                  action="{{ url_for('relationship_delete',
+                                      character_id=character['id'],
+                                      relationship_id=relationship['id']) }}"
+                                  onsubmit="return confirm('¿Eliminar esta relación?');">
+
+                                <button type="submit"
+                                        class="relationship-delete"
+                                        title="Eliminar relación">
+                                    ×
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="relationship-empty">
+
+                    <span>◇</span>
+
+                    <strong>Sin relaciones registradas</strong>
+
+                    <p>
+                        Este personaje todavía no está conectado
+                        con otros habitantes del mundo.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- NUEVA RELACION -->
+
+            <div class="relationship-form-container">
+
+                <div class="relationship-form-heading">
+                    NUEVA RELACIÓN
+                </div>
+
+                {% if available_characters %}
+
+                    <form method="POST"
+                          action="{{ url_for('relationship_create',
+                              character_id=character['id']) }}"
+                          class="relationship-form">
+
+                        <div class="form-group">
+
+                            <label for="related_character_id">
+                                Personaje relacionado
+                            </label>
+
+                            <select id="related_character_id"
+                                    name="related_character_id"
+                                    required>
+
+                                <option value="">
+                                    Seleccionar personaje...
+                                </option>
+
+                                {% for available in available_characters %}
+
+                                    <option value="{{ available['id'] }}">
+                                        {{ available["name"] }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="relationship_type">
+                                Tipo de relación
+                            </label>
+
+                            <input type="text"
+                                   id="relationship_type"
+                                   name="relationship_type"
+                                   maxlength="100"
+                                   required
+                                   placeholder="Ej. Aliado, enemigo, familiar...">
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="description">
+                                Descripción de la relación
+                            </label>
+
+                            <textarea id="description"
+                                      name="description"
+                                      rows="3"
+                                      placeholder="Historia, contexto y detalles de la relación..."></textarea>
+
+                        </div>
+
+
+                        <button type="submit" class="primary-button">
+                            + CREAR RELACIÓN
+                        </button>
+
+                    </form>
+
+                {% else %}
+
+                    <p class="relationship-hint">
+                        Necesitas crear al menos otro personaje
+                        para establecer relaciones.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- ESTADISTICAS -->
+
+    <aside class="character-profile-side">
+
+        <section class="content-panel">
+
+            <div class="panel-heading">
+                <h3>ESTADÍSTICAS</h3>
+                <span>PF2E</span>
+            </div>
+
+            <div class="character-stats">
+
+                <div>
+                    <span>NIVEL</span>
+                    <strong>
+                        {{ character["level"] if character["level"] is not none else "—" }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>CA</span>
+                    <strong>
+                        {{ character["armor_class"] if character["armor_class"] is not none else "—" }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>PG</span>
+                    <strong>
+                        {{ character["hit_points"] if character["hit_points"] is not none else "—" }}
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="detail-stat-block">
+                <span>CLASE / TIPO</span>
+                <p>{{ character["character_class"] or "Sin especificar" }}</p>
+            </div>
+
+            <div class="detail-stat-block">
+                <span>PERCEPCIÓN</span>
+                <p>{{ character["perception"] or "—" }}</p>
+            </div>
+
+            <div class="detail-stat-block">
+                <span>SALVACIONES</span>
+                <p>{{ character["saving_throws"] or "—" }}</p>
+            </div>
+
+            <div class="detail-stat-block">
+                <span>HABILIDADES</span>
+                <p>{{ character["skills"] or "—" }}</p>
+            </div>
+
+            <div class="detail-stat-block">
+                <span>ATAQUES</span>
+                <p>{{ character["attacks"] or "—" }}</p>
+            </div>
+
+            <div class="detail-stat-block">
+                <span>DOTES Y CAPACIDADES</span>
+                <p>{{ character["abilities"] or "—" }}</p>
+            </div>
+
+        </section>
+
+    </aside>
+
+</div>
+
+
+<!-- SECRETOS -->
+
+<section class="content-panel private-field">
+
+    <div class="panel-heading">
+        <h3>SECRETOS DEL DIRECTOR</h3>
+        <span>CONFIDENCIAL</span>
+    </div>
+
+    <div class="detail-text">
+        {{ character["secret_notes"] or "No hay secretos registrados." }}
+    </div>
+
+</section>
+
+
+<!-- ELIMINAR -->
+
+<section class="content-panel danger-zone">
+
+    <h3>ELIMINAR PERSONAJE</h3>
+
+    <p>
+        Esta acción eliminará el personaje y sus relaciones registradas.
+    </p>
+
+    <form method="POST"
+          action="{{ url_for('character_delete',
+              character_id=character['id']) }}"
+          onsubmit="return confirm('¿Seguro que quieres eliminar este personaje?');">
+
+        <button type="submit" class="danger-button">
+            ELIMINAR PERSONAJE
+        </button>
+
+    </form>
+
+</section>
+
+{% endblock %}

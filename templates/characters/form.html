@@ -1,0 +1,221 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+    {% if character %}Editar{% else %}Nuevo{% endif %} personaje | RPG Codex
+{% endblock %}
+
+{% block content %}
+
+<div class="page-title-row">
+    <div>
+        <div class="eyebrow">ARCHIVO DEL MUNDO / PERSONAJES</div>
+        <h2>{% if character %}Editar personaje{% else %}Nuevo personaje{% endif %}</h2>
+        <p>Registra un habitante de tu campaña.</p>
+    </div>
+
+    <a href="{{ url_for('characters') }}" class="secondary-button">
+        ← VOLVER
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <div class="flash-message {{ category }}">{{ message }}</div>
+    {% endfor %}
+{% endwith %}
+
+<form method="POST" class="content-panel editor-form">
+
+    {% set selected_type = character['character_type'] if character else 'narrative' %}
+
+    <div class="panel-heading">
+        <h3>TIPO DE PERSONAJE</h3>
+    </div>
+
+    <div class="form-group">
+        <label for="character_type">Plantilla</label>
+
+        <select id="character_type" name="character_type">
+            <option value="narrative" {% if selected_type == 'narrative' %}selected{% endif %}>
+                Personaje narrativo
+            </option>
+            <option value="statblock" {% if selected_type == 'statblock' %}selected{% endif %}>
+                PNJ con estadísticas
+            </option>
+            <option value="creature" {% if selected_type == 'creature' %}selected{% endif %}>
+                Criatura / Monstruo
+            </option>
+            <option value="important" {% if selected_type == 'important' %}selected{% endif %}>
+                Personaje importante / Antagonista
+            </option>
+        </select>
+    </div>
+
+    <div class="panel-heading">
+        <h3>IDENTIDAD</h3>
+    </div>
+
+    <div class="form-group">
+        <label for="name">Nombre *</label>
+        <input id="name" name="name" required maxlength="150"
+               placeholder="Nombre del personaje"
+               value="{{ character['name'] if character else '' }}">
+    </div>
+
+    <div class="form-grid">
+
+        <div class="form-group">
+            <label for="ancestry">Ascendencia / Especie</label>
+            <input id="ancestry" name="ancestry"
+                   placeholder="Humano, Elfo, Dromaar..."
+                   value="{{ character['ancestry'] if character else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="age">Edad</label>
+            <input id="age" name="age"
+                   placeholder="Ej. 45 años"
+                   value="{{ character['age'] if character else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="occupation">Ocupación</label>
+            <input id="occupation" name="occupation"
+                   placeholder="Ej. Noble, herrero..."
+                   value="{{ character['occupation'] if character else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="location_id">Localización asociada</label>
+
+            <select id="location_id" name="location_id">
+                <option value="">Sin localización</option>
+
+                {% for location in locations %}
+                    <option value="{{ location['id'] }}"
+                        {% if character and character['location_id'] == location['id'] %}selected{% endif %}>
+                        {{ location['name'] }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <label for="portrait_url">URL del retrato</label>
+        <input id="portrait_url" name="portrait_url"
+               placeholder="https://..."
+               value="{{ character['portrait_url'] if character else '' }}">
+        <small>Más adelante añadiremos subida directa de imágenes.</small>
+    </div>
+
+    <div class="form-group">
+        <label for="summary">Descripción breve</label>
+        <input id="summary" name="summary" maxlength="300"
+               placeholder="Descripción que identifique al personaje"
+               value="{{ character['summary'] if character else '' }}">
+    </div>
+
+    <div class="panel-heading">
+        <h3>PERSONALIDAD E HISTORIA</h3>
+    </div>
+
+    <div class="form-group">
+        <label for="personality">Personalidad</label>
+        <textarea id="personality" name="personality" rows="4">{{ character['personality'] if character else '' }}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="biography">Biografía e historia</label>
+        <textarea id="biography" name="biography" rows="7">{{ character['biography'] if character else '' }}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="motivations">Motivaciones y objetivos</label>
+        <textarea id="motivations" name="motivations" rows="4">{{ character['motivations'] if character else '' }}</textarea>
+    </div>
+
+    <div class="panel-heading">
+        <h3>ESTADÍSTICAS DE JUEGO</h3>
+        <span>OPCIONAL · PATHFINDER 2E</span>
+    </div>
+
+    <div class="form-grid">
+
+        <div class="form-group">
+            <label for="character_class">Clase / Tipo</label>
+            <input id="character_class" name="character_class"
+                   value="{{ character['character_class'] if character else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="level">Nivel</label>
+            <input id="level" name="level" type="number" min="0" max="30"
+                   value="{{ character['level'] if character and character['level'] is not none else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="armor_class">Clase de armadura (CA)</label>
+            <input id="armor_class" name="armor_class" type="number" min="0"
+                   value="{{ character['armor_class'] if character and character['armor_class'] is not none else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="hit_points">Puntos de golpe (PG)</label>
+            <input id="hit_points" name="hit_points" type="number" min="0"
+                   value="{{ character['hit_points'] if character and character['hit_points'] is not none else '' }}">
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <label for="perception">Percepción</label>
+        <input id="perception" name="perception"
+               value="{{ character['perception'] if character else '' }}">
+    </div>
+
+    <div class="form-group">
+        <label for="saving_throws">Salvaciones</label>
+        <textarea id="saving_throws" name="saving_throws" rows="2">{{ character['saving_throws'] if character else '' }}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="skills">Habilidades</label>
+        <textarea id="skills" name="skills" rows="3">{{ character['skills'] if character else '' }}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="attacks">Ataques</label>
+        <textarea id="attacks" name="attacks" rows="3">{{ character['attacks'] if character else '' }}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="abilities">Dotes y capacidades especiales</label>
+        <textarea id="abilities" name="abilities" rows="4">{{ character['abilities'] if character else '' }}</textarea>
+    </div>
+
+    <div class="panel-heading">
+        <h3>ARCHIVO PRIVADO</h3>
+        <span>DIRECTOR DE JUEGO</span>
+    </div>
+
+    <div class="form-group private-field">
+        <label for="secret_notes">Secretos y notas privadas</label>
+        <textarea id="secret_notes" name="secret_notes" rows="7">{{ character['secret_notes'] if character else '' }}</textarea>
+    </div>
+
+    <div class="form-actions">
+        <a href="{{ url_for('characters') }}" class="secondary-button">
+            CANCELAR
+        </a>
+
+        <button type="submit" class="primary-button">
+            {% if character %}GUARDAR CAMBIOS{% else %}CREAR PERSONAJE{% endif %}
+        </button>
+    </div>
+
+</form>
+
+{% endblock %}

@@ -1,0 +1,75 @@
+
+{% extends "base.html" %}
+
+{% block title %}Localizaciones | RPG Codex{% endblock %}
+
+{% block content %}
+
+<div class="page-title-row">
+    <div>
+        <div class="eyebrow">ARCHIVO DEL MUNDO</div>
+        <h2>Localizaciones</h2>
+        <p>Los lugares que conforman {{ campaign["name"] }}.</p>
+    </div>
+
+    <a href="{{ url_for('location_new') }}" class="primary-button">
+        + NUEVA LOCALIZACIÓN
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <div class="flash-message {{ category }}">{{ message }}</div>
+    {% endfor %}
+{% endwith %}
+
+<div class="content-panel">
+
+    <div class="panel-heading">
+        <h3>REGISTRO DE LOCALIZACIONES</h3>
+        <span>{{ locations|length }} REGISTROS</span>
+    </div>
+
+    {% if locations %}
+
+        <div class="location-list">
+
+            {% for location in locations %}
+
+                <a href="{{ url_for('location_detail', location_id=location['id']) }}"
+                   class="location-row">
+
+                    <div class="location-symbol">◈</div>
+
+                    <div class="location-info">
+                        <strong>{{ location["name"] }}</strong>
+                        <small>
+                            {{ location["category"] }} ·
+                            {{ location["summary"] or "Sin descripción breve" }}
+                        </small>
+                    </div>
+
+                    <span class="location-arrow">→</span>
+
+                </a>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+            <div class="empty-icon">◈</div>
+            <h3>Tu mundo todavía está por descubrirse</h3>
+            <p>Aún no has registrado ninguna localización.</p>
+            <a href="{{ url_for('location_new') }}" class="primary-button">
+                CREAR PRIMERA LOCALIZACIÓN
+            </a>
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

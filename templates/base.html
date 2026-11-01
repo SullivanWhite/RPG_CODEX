@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}RPG Codex{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/relationships.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/factions.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/compendium.css') }}">
+</head>
+<body>
+<div class="app-container">
+    <aside class="sidebar">
+        <a href="{{ url_for('dashboard') }}" class="brand">
+            <div class="brand-icon">✦</div>
+            <h1>RPG CODEX</h1>
+            <small>CAMPAIGN MANAGEMENT</small>
+        </a>
+        <div class="campaign-selector">
+            <span class="nav-section">CAMPAÑA ACTIVA</span>
+            <strong>Valdren Hollow</strong>
+            <small>Pathfinder 2e Remaster</small>
+        </div>
+        <nav class="navigation">
+            <div class="nav-section">GENERAL</div>
+            <a href="{{ url_for('dashboard') }}" class="nav-item {% if request.endpoint == 'dashboard' %}active{% endif %}"><span>⌂</span> Dashboard</a>
+            <div class="nav-section">MUNDO</div>
+            <a href="{{ url_for('locations') }}" class="nav-item {% if request.endpoint and request.endpoint.startswith('location') %}active{% endif %}"><span>◈</span> Localizaciones</a>
+            <a href="{{ url_for('characters') }}" class="nav-item {% if request.endpoint and request.endpoint.startswith('character') or request.endpoint and request.endpoint.startswith('relationship') %}active{% endif %}"><span>♙</span> Personajes</a>
+            <a href="{{ url_for('factions') }}" class="nav-item {% if request.endpoint and request.endpoint.startswith('faction') %}active{% endif %}"><span>⚑</span> Facciones</a>
+            <a href="{{ url_for('bestiary') }}" class="nav-item {% if request.endpoint and request.endpoint.startswith('creature') or request.endpoint == 'bestiary' %}active{% endif %}"><span>▧</span> Bestiario</a>
+            <a href="{{ url_for('items') }}" class="nav-item {% if request.endpoint and request.endpoint.startswith('item') or request.endpoint == 'items' %}active{% endif %}"><span>◇</span> Objetos</a>
+            <div class="nav-section">CAMPAÑA</div>
+            <a href="#" class="nav-item"><span>▤</span> Misiones</a>
+            <a href="#" class="nav-item"><span>◷</span> Cronología</a>
+            <a href="#" class="nav-item"><span>▣</span> Diario</a>
+            <a href="#" class="nav-item"><span>⚑</span> Acontecimientos</a>
+            <div class="nav-section">HERRAMIENTAS</div>
+            <a href="#" class="nav-item"><span>⚔</span> Pathfinder 2e</a>
+            <a href="#" class="nav-item"><span>▦</span> Mapas</a>
+            <a href="#" class="nav-item"><span>⚙</span> Configuración</a>
+        </nav>
+        <div class="sidebar-footer"><span>RPG CODEX</span><small>VERSION 0.5 · CAMPAIGN SYSTEM</small></div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar"><div class="breadcrumb">VALDREN HOLLOW <span>/</span> CÓDICE</div><div class="topbar-right"><span class="status-dot"></span> DIRECTOR DE JUEGO</div></header>
+        <section class="page-content">{% block content %}{% endblock %}</section>
+    </main>
+</div>
+</body>
+</html>

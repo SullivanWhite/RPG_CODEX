@@ -1,0 +1,102 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ location["name"] }} | RPG Codex{% endblock %}
+
+{% block content %}
+
+<div class="page-title-row">
+    <div>
+        <div class="eyebrow">ARCHIVO DEL MUNDO / LOCALIZACIÓN</div>
+        <h2>{{ location["name"] }}</h2>
+        <p>{{ location["category"] }}</p>
+    </div>
+
+    <div class="detail-actions">
+        <a href="{{ url_for('location_edit', location_id=location['id']) }}"
+           class="primary-button">
+            EDITAR
+        </a>
+
+        <a href="{{ url_for('locations') }}" class="secondary-button">
+            VOLVER
+        </a>
+    </div>
+</div>
+
+<section class="content-panel location-detail">
+
+    <div class="panel-heading">
+        <h3>DESCRIPCIÓN GENERAL</h3>
+        <span>{{ location["category"]|upper }}</span>
+    </div>
+
+    {% if location["summary"] %}
+        <h3 class="location-summary">{{ location["summary"] }}</h3>
+    {% endif %}
+
+    <div class="detail-text">
+        {{ location["description"] or "Todavía no se ha añadido una descripción." }}
+    </div>
+
+</section>
+
+<section class="content-panel location-detail faction-affiliations">
+
+    <div class="panel-heading">
+        <h3>FACCIONES VINCULADAS</h3>
+        <span>{{ factions|length }} VÍNCULOS</span>
+    </div>
+
+    {% if factions %}
+        <div class="faction-links">
+            {% for faction in factions %}
+                <a href="{{ url_for('faction_detail', faction_id=faction['id']) }}"
+                   class="faction-link">
+                    <span>⚑</span>
+                    <div>
+                        <strong>{{ faction['name'] }}</strong>
+                        <small>{{ faction['relationship_type'] }}{% if faction['link_description'] %} · {{ faction['link_description'] }}{% endif %}</small>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="connection-empty">
+            Ninguna facción ha sido vinculada todavía a esta localización.
+        </p>
+    {% endif %}
+
+</section>
+
+<section class="content-panel location-detail private-field">
+
+    <div class="panel-heading">
+        <h3>ARCHIVO PRIVADO DEL DIRECTOR</h3>
+        <span>CONFIDENCIAL</span>
+    </div>
+
+    <div class="detail-text">
+        {{ location["secret_notes"] or "No hay notas privadas registradas." }}
+    </div>
+
+</section>
+
+<section class="content-panel danger-zone">
+
+    <h3>ELIMINAR LOCALIZACIÓN</h3>
+    <p>Esta acción eliminará definitivamente el registro.</p>
+
+    <form method="POST"
+          action="{{ url_for('location_delete', location_id=location['id']) }}"
+          onsubmit="return confirm('¿Seguro que quieres eliminar esta localización?');">
+
+        <button type="submit" class="danger-button">
+            ELIMINAR LOCALIZACIÓN
+        </button>
+
+    </form>
+
+</section>
+
+{% endblock %}

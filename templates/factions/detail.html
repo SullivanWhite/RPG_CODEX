@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}{{ faction['name'] }} | RPG Codex{% endblock %}
+
+{% block content %}
+<div class="page-title-row">
+    <div>
+        <div class="eyebrow">ARCHIVO DEL MUNDO / FACCIONES</div>
+        <h2>{{ faction['name'] }}</h2>
+        <p>{{ faction['faction_type'] }} · {{ faction['summary'] or 'Sin resumen registrado.' }}</p>
+    </div>
+    <div class="detail-actions">
+        <a href="{{ url_for('faction_edit', faction_id=faction['id']) }}" class="primary-button">EDITAR</a>
+        <a href="{{ url_for('factions') }}" class="secondary-button">VOLVER</a>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <div class="flash-message {{ category }}">{{ message }}</div>
+    {% endfor %}
+{% endwith %}
+
+<section class="content-panel faction-identity">
+    <div class="faction-emblem">⚑</div>
+    <div>
+        <span class="faction-type">{{ faction['faction_type']|upper }}</span>
+        <h2>{{ faction['name'] }}</h2>
+        <p>{{ faction['summary'] or 'Sin descripción breve.' }}</p>
+    </div>
+</section>
+
+<div class="faction-detail-grid">
+    <div class="faction-main">
+        <section class="content-panel">
+            <div class="panel-heading"><h3>HISTORIA Y DESCRIPCIÓN</h3></div>
+            <div class="detail-text">{{ faction['description'] or 'Todavía no se ha añadido una descripción.' }}</div>
+        </section>
+        <section class="content-panel">
+            <div class="panel-heading"><h3>IDEOLOGÍA Y VALORES</h3></div>
+            <div class="detail-text">{{ faction['ideology'] or 'No se ha registrado una ideología.' }}</div>
+        </section>
+        <section class="content-panel">
+            <div class="panel-heading"><h3>OBJETIVOS</h3></div>
+            <div class="detail-text">{{ faction['goals'] or 'No se han registrado objetivos.' }}</div>
+        </section>
+        <section class="content-panel">
+            <div class="panel-heading"><h3>JERARQUÍA</h3></div>
+            <div class="detail-text">{{ faction['hierarchy'] or 'No se ha registrado una jerarquía.' }}</div>
+        </section>
+    </div>
+    <aside class="faction-side">
+        <section class="content-panel private-field">
+            <div class="panel-heading"><h3>ARCHIVO PRIVADO DEL DIRECTOR</h3><span>CONFIDENCIAL</span></div>
+            <div class="detail-text">{{ faction['secret_notes'] or 'No hay notas privadas registradas.' }}</div>
+        </section>
+    </aside>
+</div>
+
+<div class="faction-connections-grid">
+    <section class="content-panel faction-connection-panel">
+        <div class="panel-heading"><h3>PERSONAJES VINCULADOS</h3><span>{{ members|length }} REGISTRADOS</span></div>
+        {% if members %}
+            <div class="connection-list">
+                {% for member in members %}
+                    <div class="connection-row">
+                        <div class="connection-icon">♙</div>
+                        <div class="connection-info"><a href="{{ url_for('character_detail', character_id=member['character_id']) }}">{{ member['name'] }}</a><strong>{{ member['role'] }}</strong>{% if member['description'] %}<p>{{ member['description'] }}</p>{% endif %}</div>
+                        <form method="POST" action="{{ url_for('faction_member_delete', faction_id=faction['id'], membership_id=member['id']) }}" onsubmit="return confirm('¿Eliminar este vínculo?');"><button class="connection-delete" title="Eliminar vínculo">×</button></form>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}<p class="connection-empty">No hay personajes vinculados todavía.</p>{% endif %}
+        {% if available_characters %}
+            <form method="POST" action="{{ url_for('faction_member_create', faction_id=faction['id']) }}" class="connection-form">
+                <h4>VINCULAR PERSONAJE</h4>
+                <div class="form-group"><label for="character_id">Personaje</label><select id="character_id" name="character_id" required><option value="">Seleccionar personaje...</option>{% for character in available_characters %}<option value="{{ character['id'] }}">{{ character['name'] }}</option>{% endfor %}</select></div>
+                <div class="form-group"><label for="role">Cargo o papel</label><input id="role" name="role" maxlength="100" required placeholder="Ej. Líder, agente, miembro..."></div>
+                <div class="form-group"><label for="description">Notas del vínculo</label><textarea id="member_description" name="description" rows="2" placeholder="Detalles opcionales."></textarea></div>
+                <button class="primary-button" type="submit">+ VINCULAR PERSONAJE</button>
+            </form>
+        {% endif %}
+    </section>
+
+    <section class="content-panel faction-connection-panel">
+        <div class="panel-heading"><h3>LOCALIZACIONES VINCULADAS</h3><span>{{ locations|length }} REGISTRADAS</span></div>
+        {% if locations %}
+            <div class="connection-list">
+                {% for location in locations %}
+                    <div class="connection-row">
+                        <div class="connection-icon">◈</div>
+                        <div class="connection-info"><a href="{{ url_for('location_detail', location_id=location['location_id']) }}">{{ location['name'] }}</a><strong>{{ location['relationship_type'] }}</strong>{% if location['description'] %}<p>{{ location['description'] }}</p>{% endif %}</div>
+                        <form method="POST" action="{{ url_for('faction_location_delete', faction_id=faction['id'], link_id=location['id']) }}" onsubmit="return confirm('¿Eliminar este vínculo?');"><button class="connection-delete" title="Eliminar vínculo">×</button></form>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}<p class="connection-empty">No hay localizaciones vinculadas todavía.</p>{% endif %}
+        {% if available_locations %}
+            <form method="POST" action="{{ url_for('faction_location_create', faction_id=faction['id']) }}" class="connection-form">
+                <h4>VINCULAR LOCALIZACIÓN</h4>
+                <div class="form-group"><label for="location_id">Localización</label><select id="location_id" name="location_id" required><option value="">Seleccionar localización...</option>{% for location in available_locations %}<option value="{{ location['id'] }}">{{ location['name'] }}</option>{% endfor %}</select></div>
+                <div class="form-group"><label for="location_relationship_type">Tipo de vínculo</label><input id="location_relationship_type" name="relationship_type" maxlength="100" required placeholder="Ej. Sede, territorio, refugio..."></div>
+                <div class="form-group"><label for="location_description">Notas del vínculo</label><textarea id="location_description" name="description" rows="2" placeholder="Detalles opcionales."></textarea></div>
+                <button class="primary-button" type="submit">+ VINCULAR LOCALIZACIÓN</button>
+            </form>
+        {% endif %}
+    </section>
+
+    <section class="content-panel faction-connection-panel faction-relationships">
+        <div class="panel-heading"><h3>RELACIONES ENTRE FACCIONES</h3><span>{{ relationships|length }} REGISTRADAS</span></div>
+        {% if relationships %}
+            <div class="connection-list">
+                {% for relationship in relationships %}
+                    <div class="connection-row">
+                        <div class="connection-icon">⚑</div>
+                        <div class="connection-info"><a href="{{ url_for('faction_detail', faction_id=relationship['related_id']) }}">{{ relationship['related_name'] }}</a><strong>{{ relationship['relationship_type'] }}</strong>{% if relationship['description'] %}<p>{{ relationship['description'] }}</p>{% endif %}</div>
+                        <form method="POST" action="{{ url_for('faction_relationship_delete', faction_id=faction['id'], relationship_id=relationship['id']) }}" onsubmit="return confirm('¿Eliminar esta relación?');"><button class="connection-delete" title="Eliminar relación">×</button></form>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}<p class="connection-empty">No hay relaciones entre facciones registradas.</p>{% endif %}
+        {% if available_factions %}
+            <form method="POST" action="{{ url_for('faction_relationship_create', faction_id=faction['id']) }}" class="connection-form">
+                <h4>NUEVA RELACIÓN</h4>
+                <div class="form-group"><label for="related_faction_id">Facción relacionada</label><select id="related_faction_id" name="related_faction_id" required><option value="">Seleccionar facción...</option>{% for available in available_factions %}<option value="{{ available['id'] }}">{{ available['name'] }}</option>{% endfor %}</select></div>
+                <div class="form-group"><label for="faction_relationship_type">Tipo de relación</label><input id="faction_relationship_type" name="relationship_type" maxlength="100" required placeholder="Ej. Aliada, rival, subordinada..."></div>
+                <div class="form-group"><label for="faction_relationship_description">Notas de la relación</label><textarea id="faction_relationship_description" name="description" rows="2" placeholder="Detalles opcionales."></textarea></div>
+                <button class="primary-button" type="submit">+ CREAR RELACIÓN</button>
+            </form>
+        {% endif %}
+    </section>
+</div>
+
+<section class="content-panel danger-zone">
+    <h3>ELIMINAR FACCIÓN</h3>
+    <p>Se eliminará la facción y sus vínculos, pero no los personajes ni las localizaciones relacionadas.</p>
+    <form method="POST" action="{{ url_for('faction_delete', faction_id=faction['id']) }}" onsubmit="return confirm('¿Seguro que quieres eliminar esta facción?');"><button type="submit" class="danger-button">ELIMINAR FACCIÓN</button></form>
+</section>
+{% endblock %}

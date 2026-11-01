@@ -1,0 +1,110 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+    {% if location %}Editar{% else %}Nueva{% endif %} localización | RPG Codex
+{% endblock %}
+
+{% block content %}
+
+<div class="page-title-row">
+    <div>
+        <div class="eyebrow">ARCHIVO DEL MUNDO</div>
+        <h2>{% if location %}Editar localización{% else %}Nueva localización{% endif %}</h2>
+        <p>Registra un lugar de tu campaña.</p>
+    </div>
+    <a href="{{ url_for('locations') }}" class="secondary-button">
+        ← VOLVER
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <div class="flash-message {{ category }}">{{ message }}</div>
+    {% endfor %}
+{% endwith %}
+
+<form method="POST" class="content-panel editor-form">
+
+    <div class="panel-heading">
+        <h3>INFORMACIÓN GENERAL</h3>
+        <span>DATOS DE LOCALIZACIÓN</span>
+    </div>
+
+    <div class="form-group">
+        <label for="name">Nombre *</label>
+        <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            maxlength="150"
+            placeholder="Ej. La Trucha Dorada"
+            value="{{ location['name'] if location else '' }}"
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="category">Categoría</label>
+        {% set selected_category = location['category'] if location else 'Pueblo' %}
+
+        <select id="category" name="category">
+            {% for category in [
+                'Pueblo', 'Ciudad', 'Edificio', 'Taberna',
+                'Tienda', 'Mazmorra', 'Región', 'Exterior',
+                'Fortaleza', 'Templo', 'Otro'
+            ] %}
+                <option value="{{ category }}"
+                    {% if selected_category == category %}selected{% endif %}>
+                    {{ category }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="summary">Descripción breve</label>
+        <input
+            type="text"
+            id="summary"
+            name="summary"
+            maxlength="300"
+            placeholder="Una breve presentación del lugar"
+            value="{{ location['summary'] if location else '' }}"
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="description">Descripción e historia</label>
+        <textarea
+            id="description"
+            name="description"
+            rows="9"
+            placeholder="Describe el lugar, su historia, habitantes y características..."
+        >{{ location['description'] if location else '' }}</textarea>
+    </div>
+
+    <div class="form-group private-field">
+        <label for="secret_notes">Notas privadas del director</label>
+        <textarea
+            id="secret_notes"
+            name="secret_notes"
+            rows="6"
+            placeholder="Secretos, pistas, acontecimientos ocultos y detalles que los jugadores no deben conocer..."
+        >{{ location['secret_notes'] if location else '' }}</textarea>
+        <small>Información reservada para el director de juego.</small>
+    </div>
+
+    <div class="form-actions">
+        <a href="{{ url_for('locations') }}" class="secondary-button">
+            CANCELAR
+        </a>
+
+        <button type="submit" class="primary-button">
+            {% if location %}GUARDAR CAMBIOS{% else %}CREAR LOCALIZACIÓN{% endif %}
+        </button>
+    </div>
+
+</form>
+
+{% endblock %}

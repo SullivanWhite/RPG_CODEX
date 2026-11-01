@@ -1,0 +1,28 @@
+.compendium-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:15px; }
+.compendium-card { display:flex; gap:14px; align-items:flex-start; min-height:175px; padding:18px; background:#202d39; border:1px solid var(--border); transition:.2s; }
+.compendium-card:hover { border-color:var(--gold); transform:translateY(-3px); }
+.compendium-icon,.compendium-emblem { display:grid; place-items:center; flex-shrink:0; background:#263746; border:1px solid #445665; color:var(--gold); }
+.compendium-icon { width:42px; height:42px; font-size:20px; }
+.compendium-card-content { flex:1; min-width:0; }
+.compendium-type { color:var(--gold); font-size:8px; letter-spacing:1.4px; }
+.compendium-card h3 { margin:8px 0; font-size:15px; }
+.compendium-card p { color:var(--muted); font-size:10px; line-height:1.6; }
+.compendium-meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; color:#b8c3cc; font-size:9px; }
+.compendium-arrow { align-self:center; color:var(--gold); }
+.compendium-form-panel { margin-top:18px; }
+.compendium-identity { display:flex; gap:20px; align-items:center; margin-bottom:18px; }
+.compendium-emblem,.compendium-image { width:110px; height:130px; flex-shrink:0; object-fit:cover; }
+.compendium-emblem { font-size:45px; }
+.compendium-identity h2 { margin:7px 0; font-size:24px; }
+.compendium-identity p { color:var(--muted); font-size:12px; line-height:1.6; }
+.compendium-location { display:flex; flex-direction:column; gap:4px; margin-top:17px; }
+.compendium-location span { color:var(--gold); font-size:8px; letter-spacing:1px; }
+.compendium-location a { color:var(--gold-light); font-size:11px; }
+.compendium-detail-grid { display:grid; grid-template-columns:minmax(0,1.6fr) minmax(260px,.85fr); gap:18px; align-items:start; margin-bottom:18px; }
+.compendium-main { display:flex; flex-direction:column; gap:16px; }
+.compendium-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:18px; }
+.compendium-stats > div { background:#253443; border:1px solid var(--border); padding:12px 8px; text-align:center; }
+.compendium-stats span { display:block; color:var(--gold); font-size:9px; }
+.compendium-stats strong { display:block; font-size:22px; margin-top:7px; }
+@media (max-width:1000px) { .compendium-grid{grid-template-columns:repeat(2,minmax(0,1fr));} .compendium-detail-grid{grid-template-columns:1fr;} }
+@media (max-width:600px) { .compendium-grid{grid-template-columns:1fr;} .compendium-identity{align-items:flex-start;} .compendium-emblem,.compendium-image{width:90px;height:110px;} }

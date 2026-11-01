@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Facciones | RPG Codex{% endblock %}
+
+{% block content %}
+<div class="page-title-row">
+    <div>
+        <div class="eyebrow">ARCHIVO DEL MUNDO / ORGANIZACIONES</div>
+        <h2>Facciones</h2>
+        <p>Grupos, órdenes y organizaciones que mueven Valdren Hollow.</p>
+    </div>
+    <a href="{{ url_for('faction_new') }}" class="primary-button">+ NUEVA FACCIÓN</a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <div class="flash-message {{ category }}">{{ message }}</div>
+    {% endfor %}
+{% endwith %}
+
+{% if factions %}
+    <div class="faction-grid">
+        {% for faction in factions %}
+            <a href="{{ url_for('faction_detail', faction_id=faction['id']) }}" class="faction-card">
+                <div class="faction-card-icon">⚑</div>
+                <div class="faction-card-content">
+                    <span class="faction-type">{{ faction['faction_type']|upper }}</span>
+                    <h3>{{ faction['name'] }}</h3>
+                    <p>{{ faction['summary'] or 'Sin resumen registrado.' }}</p>
+                    <div class="faction-card-meta">
+                        <span>♙ {{ faction['member_count'] }} miembros</span>
+                        <span>◈ {{ faction['location_count'] }} lugares</span>
+                    </div>
+                </div>
+                <span class="faction-card-arrow">→</span>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <section class="content-panel empty-state">
+        <div class="empty-icon">⚑</div>
+        <h3>No hay facciones registradas</h3>
+        <p>Crea la primera organización para comenzar a conectar el mundo de la campaña.</p>
+        <a href="{{ url_for('faction_new') }}" class="primary-button">CREAR PRIMERA FACCIÓN</a>
+    </section>
+{% endif %}
+{% endblock %}

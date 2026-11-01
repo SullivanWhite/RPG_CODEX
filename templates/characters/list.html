@@ -1,0 +1,101 @@
+
+{% extends "base.html" %}
+
+{% block title %}Personajes | RPG Codex{% endblock %}
+
+{% block content %}
+
+<div class="page-title-row">
+    <div>
+        <div class="eyebrow">ARCHIVO DEL MUNDO</div>
+        <h2>Personajes</h2>
+        <p>Los habitantes y protagonistas de {{ campaign["name"] }}.</p>
+    </div>
+
+    <a href="{{ url_for('character_new') }}" class="primary-button">
+        + NUEVO PERSONAJE
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <div class="flash-message {{ category }}">{{ message }}</div>
+    {% endfor %}
+{% endwith %}
+
+<section class="content-panel">
+
+    <div class="panel-heading">
+        <h3>REGISTRO DE PERSONAJES</h3>
+        <span>{{ characters|length }} REGISTROS</span>
+    </div>
+
+    {% if characters %}
+
+        <div class="character-grid">
+
+            {% for character in characters %}
+
+                <a href="{{ url_for('character_detail', character_id=character['id']) }}"
+                   class="character-card">
+
+                    {% if character["portrait_url"] %}
+                        <img src="{{ character['portrait_url'] }}"
+                             alt="{{ character['name'] }}"
+                             class="character-portrait">
+                    {% else %}
+                        <div class="character-placeholder">♙</div>
+                    {% endif %}
+
+                    <div class="character-card-info">
+
+                        <span class="character-type">
+                            {% if character["character_type"] == "narrative" %}
+                                NARRATIVO
+                            {% elif character["character_type"] == "statblock" %}
+                                PNJ CON ESTADÍSTICAS
+                            {% elif character["character_type"] == "creature" %}
+                                CRIATURA
+                            {% else %}
+                                PERSONAJE IMPORTANTE
+                            {% endif %}
+                        </span>
+
+                        <h3>{{ character["name"] }}</h3>
+
+                        <p>
+                            {{ character["ancestry"] or "Ascendencia desconocida" }}
+                            {% if character["occupation"] %}
+                                · {{ character["occupation"] }}
+                            {% endif %}
+                        </p>
+
+                        <small>
+                            {{ character["location_name"] or "Sin localización asignada" }}
+                        </small>
+
+                    </div>
+
+                </a>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+            <div class="empty-icon">♙</div>
+            <h3>Tu mundo todavía no tiene habitantes registrados</h3>
+            <p>Comienza creando tu primer personaje.</p>
+
+            <a href="{{ url_for('character_new') }}" class="primary-button">
+                CREAR PRIMER PERSONAJE
+            </a>
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}
